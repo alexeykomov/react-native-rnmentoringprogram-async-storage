@@ -11,23 +11,51 @@ import Foundation
 @objc(RNRnmentoringprogramAsyncStorage)
 class RNRnmentoringprogramAsyncStorage: NSObject {
     
+    func performInBackground(task: () -> Void) {
+        DispatchQueue.global(qos: .userInteractive).async({
+            task()
+        })
+    }
+    
     @objc(getItem)
-    func getItem() -> String {
-        
+    func getItem(key: String, onEnd: (StorageError?, String?) -> Void) -> String {
+        performInBackground({
+            onEnd(nil, UserDefaults.standard.string(forKey: key))
+        })
     }
     
-    @objc(setItem:item)
-    func setItem(item: String) {
-        
+    @objc(setItem:item:)
+    func setItem(key: String, value: String, onEnd: (StorageError?, Result?) -> Void) {
+        performInBackground({
+            UserDefaults.standard.set(value: value, forKey: key)
+            onEnd(nil, Result(success: true))
+        })
     }
     
-    @objc(setMultipleItems:items)
-    func setMultipleItems(items: [String]) {
-        
+    @objc(setMultipleItems:items:)
+    func setMultipleItems(items: [(String,String)], onEnd: (StorageError?, Result?) -> Void) {
+        performInBackground({
+            items.forEach({ item in
+                UserDefaults.standard.set(value: item.0, forKey: item.1)
+            })
+            onEnd(nil, Result(success: true))
+        })
     }
     
     @objc(getMultipleItems)
-    func getMultipleItems() -> [String] {
-        
+    func getMultipleItems(keys: [String], onEnd: (StorageError?, [String]?) -> Void) -> [String] {
+        performInBackground({
+            onEnd(nil, keys.map({ key in
+                UserDefaults.standard.string(forKey: key)
+            }))
+        })
+    }
+    
+    struct Result {
+        let success: Bool
+    }
+    
+    struct StorageError {
+        let message: String
     }
 }
