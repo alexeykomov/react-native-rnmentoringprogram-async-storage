@@ -30,7 +30,6 @@ class RNRnmentoringprogramAsyncStorage: NSObject {
                        reject: @escaping RCTPromiseRejectBlock) {
         performInBackground({
             UserDefaults.standard.set(value, forKey: key)
-            print("item was set: \(key)")
             resolve(true)
         })
     }
