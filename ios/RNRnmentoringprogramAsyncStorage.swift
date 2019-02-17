@@ -11,6 +11,10 @@ import Foundation
 @objc(RNRnmentoringprogramAsyncStorage)
 class RNRnmentoringprogramAsyncStorage: NSObject {
     
+    @objc static func requiresMainQueueSetup() -> Bool {
+        return false
+    }
+    
     func performInBackground(_ task: @escaping () -> Void) {
         DispatchQueue.global(qos: .userInteractive).async(execute: {
             task()
