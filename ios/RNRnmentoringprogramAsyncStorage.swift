@@ -11,51 +11,48 @@ import Foundation
 @objc(RNRnmentoringprogramAsyncStorage)
 class RNRnmentoringprogramAsyncStorage: NSObject {
     
-    func performInBackground(task: () -> Void) {
-        DispatchQueue.global(qos: .userInteractive).async({
+    func performInBackground(_ task: @escaping () -> Void) {
+        DispatchQueue.global(qos: .userInteractive).async(execute: {
             task()
         })
     }
     
-    @objc(getItem)
-    func getItem(key: String, onEnd: (StorageError?, String?) -> Void) -> String {
+    @objc func getItem(_ key: String,
+                       resolve: @escaping RCTPromiseResolveBlock,
+                       reject: @escaping RCTPromiseRejectBlock){
         performInBackground({
-            onEnd(nil, UserDefaults.standard.string(forKey: key))
+            resolve(UserDefaults.standard.string(forKey: key))
         })
     }
     
-    @objc(setItem:item:)
-    func setItem(key: String, value: String, onEnd: (StorageError?, Result?) -> Void) {
+    @objc func setItem(_ key: String, value: String,
+                       resolve: @escaping RCTPromiseResolveBlock,
+                       reject: @escaping RCTPromiseRejectBlock) {
         performInBackground({
-            UserDefaults.standard.set(value: value, forKey: key)
-            onEnd(nil, Result(success: true))
+            UserDefaults.standard.set(value, forKey: key)
+            print("item was set: \(key)")
+            resolve(true)
         })
     }
     
-    @objc(setMultipleItems:items:)
-    func setMultipleItems(items: [(String,String)], onEnd: (StorageError?, Result?) -> Void) {
+    @objc func setMultipleItems(_ keyValuePairs: [[String]],
+                                resolve: @escaping RCTPromiseResolveBlock,
+                                reject: @escaping RCTPromiseRejectBlock) {
         performInBackground({
-            items.forEach({ item in
-                UserDefaults.standard.set(value: item.0, forKey: item.1)
+            keyValuePairs.forEach({ keyValuePair in
+                UserDefaults.standard.set(keyValuePair[1], forKey: keyValuePair[0])
             })
-            onEnd(nil, Result(success: true))
+            resolve(true)
         })
     }
     
-    @objc(getMultipleItems)
-    func getMultipleItems(keys: [String], onEnd: (StorageError?, [String]?) -> Void) -> [String] {
+    @objc func getMultipleItems(_ keys: [String],
+                                resolve: @escaping RCTPromiseResolveBlock,
+                                reject: @escaping RCTPromiseResolveBlock) {
         performInBackground({
-            onEnd(nil, keys.map({ key in
+            resolve(keys.map({ key in
                 UserDefaults.standard.string(forKey: key)
             }))
         })
-    }
-    
-    struct Result {
-        let success: Bool
-    }
-    
-    struct StorageError {
-        let message: String
     }
 }

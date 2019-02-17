@@ -5,7 +5,4 @@
 #import <React/RCTBridgeModule.h>
 #endif
 
-@interface RNRnmentoringprogramAsyncStorage : NSObject <RCTBridgeModule>
-
-@end
   
