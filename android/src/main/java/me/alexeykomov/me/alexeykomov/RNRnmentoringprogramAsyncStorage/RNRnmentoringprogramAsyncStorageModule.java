@@ -73,7 +73,6 @@ public class RNRnmentoringprogramAsyncStorageModule extends ReactContextBaseJava
                 if (sharedPreferences.contains(key)) {
                     values.add(sharedPreferences.getString(key, ""));
                 }
-
             }
             result.resolve(values);
         } catch (Exception e) {
@@ -82,7 +81,19 @@ public class RNRnmentoringprogramAsyncStorageModule extends ReactContextBaseJava
     }
 
     public void setMultipleItems(List<String []> keyValuePairs, Promise result) {
-        SharedPreferences 
+        SharedPreferences sharedPreferences = reactContext.getSharedPreferences(
+                PREFERENCE_FILE_KEY,
+                Context.MODE_PRIVATE
+        );
+        try {
+            for (String [] keyValuePair : keyValuePairs) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString(keyValuePair[0], keyValuePair[1]);
+                editor.apply();
+            }
+            result.resolve(true);
+        } catch (Exception e) {
+            result.reject(e);
+        }
     }
-
 }
