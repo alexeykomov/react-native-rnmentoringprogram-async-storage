@@ -1,5 +1,5 @@
 
-package me.alexeykomov.me.alexeykomov.RNRnmentoringprogramAsyncStorage;
+package me.alexeykomov.RNRnmentoringprogramAsyncStorage;
 
 import android.content.Context;
 import android.content.SharedPreferences;
