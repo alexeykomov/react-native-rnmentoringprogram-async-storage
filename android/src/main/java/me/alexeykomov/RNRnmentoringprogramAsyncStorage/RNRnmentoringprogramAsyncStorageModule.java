@@ -9,6 +9,9 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.WritableArray;
+import com.facebook.react.bridge.WritableNativeArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +35,7 @@ public class RNRnmentoringprogramAsyncStorageModule extends ReactContextBaseJava
         return "RNRnmentoringprogramAsyncStorage";
     }
 
-
+    @ReactMethod
     public void getItem(String key, Promise result) {
         SharedPreferences sharedPreferences = reactContext.getSharedPreferences(
                 PREFERENCE_FILE_KEY,
@@ -49,6 +52,7 @@ public class RNRnmentoringprogramAsyncStorageModule extends ReactContextBaseJava
         }
     }
 
+    @ReactMethod
     public void setItem(String key, String value, Promise result) {
         SharedPreferences sharedPreferences = reactContext.getSharedPreferences(
                 PREFERENCE_FILE_KEY,
@@ -63,15 +67,17 @@ public class RNRnmentoringprogramAsyncStorageModule extends ReactContextBaseJava
         }
     }
 
-    public void getMultipleItems(List<String> keys, Promise result) {
+    @ReactMethod
+    public void getMultipleItems(ReadableArray keys, Promise result) {
         SharedPreferences sharedPreferences = reactContext.getSharedPreferences(
                 PREFERENCE_FILE_KEY,
                 Context.MODE_PRIVATE);
-        final List<String> values = new ArrayList<String>();
+        final WritableArray values = new WritableNativeArray();
         try {
-            for (String key : keys) {
+            for (int counter = 0; counter < keys.size(); counter++) {
+                String key = keys.getString(counter);
                 if (sharedPreferences.contains(key)) {
-                    values.add(sharedPreferences.getString(key, ""));
+                    values.pushString(sharedPreferences.getString(key, ""));
                 }
             }
             result.resolve(values);
@@ -80,15 +86,18 @@ public class RNRnmentoringprogramAsyncStorageModule extends ReactContextBaseJava
         }
     }
 
-    public void setMultipleItems(List<String []> keyValuePairs, Promise result) {
+    @ReactMethod
+    public void setMultipleItems(ReadableArray keyValuePairs, Promise result) {
         SharedPreferences sharedPreferences = reactContext.getSharedPreferences(
                 PREFERENCE_FILE_KEY,
                 Context.MODE_PRIVATE
         );
         try {
-            for (String [] keyValuePair : keyValuePairs) {
+            for (int counter = 0; counter < keyValuePairs.size(); counter++) {
+                ReadableArray keyValuePair = keyValuePairs.getArray(counter);
+
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(keyValuePair[0], keyValuePair[1]);
+                editor.putString(keyValuePair.getString(0), keyValuePair.getString(1));
                 editor.apply();
             }
             result.resolve(true);
