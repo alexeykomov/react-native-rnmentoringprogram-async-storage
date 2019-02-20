@@ -45,9 +45,34 @@
 
 ## Usage
 ```javascript
-import RNRnmentoringprogramAsyncStorage from 'react-native-rnmentoringprogram-async-storage';
+import { NativeModules } from 'react-native';
 
-// TODO: What to do with the module?
-RNRnmentoringprogramAsyncStorage;
+
+class MyComp extends React.Component {
+  async componentDidMount() {
+    await NativeModules.RNRnmentoringprogramAsyncStorage.setItem(
+      'someKey',
+      'someValue',
+    );
+    const item = await NativeModules.RNRnmentoringprogramAsyncStorage.getItem(
+      'someKey',
+    );
+    await NativeModules.RNRnmentoringprogramAsyncStorage.setMultipleItems([
+      ['someKey1', 'someValue1'],
+      ['someKey2', 'someValue2'],
+    ]);
+    const items = await NativeModules.RNRnmentoringprogramAsyncStorage.getMultipleItems(
+      ['someKey1', 'someKey1'],
+    );
+    const item2 = await NativeModules.RNRnmentoringprogramAsyncStorage.getItem(
+      'someKey2',
+    );
+    console.log('item: ', item);
+    console.log('items: ', items);
+    console.log('item2: ', item2);
+  }  
+  
+  render() {}
+}
 ```
   
