@@ -64,12 +64,8 @@ class MyComp extends React.Component {
     const items = await NativeModules.RNRnmentoringprogramAsyncStorage.getMultipleItems(
       ['someKey1', 'someKey1'],
     );
-    const item2 = await NativeModules.RNRnmentoringprogramAsyncStorage.getItem(
-      'someKey2',
-    );
     console.log('item: ', item);
     console.log('items: ', items);
-    console.log('item2: ', item2);
   }  
   
   render() {}
